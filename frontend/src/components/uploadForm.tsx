@@ -29,7 +29,7 @@ const UploadForm: React.FC = () => {
             setStatus(null); // Reset status before submission
             // simulate backedend call for now
             await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate a delay
-            // const response = await axios.post('http://localhost:8000/instructions/submit', formData);
+            const response = await axios.post('http://localhost:8000/instructions/submit', formData);
             setStatus(`✅ Successfully submitted!`);
         } catch (error) {
             setStatus('❌ Error submitting instructions.');
