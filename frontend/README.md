@@ -52,3 +52,13 @@ export default tseslint.config({
   },
 })
 ```
+
+
+🧱 Database Location:
+- The app writes to: `backend/justdiy.db`
+- To inspect it manually:
+
+```bash
+sqlite3 backend/justdiy.db
+.tables
+.schema jobs

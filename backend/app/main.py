@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import instructions
+from app.core.config import Base, engine
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
+print("✅ Database tables created (if not exist)")
 
 # Allow CORS for local frontend
 app.add_middleware(
