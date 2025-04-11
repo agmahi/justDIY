@@ -5,8 +5,18 @@ module.exports = {
     "./src/index.css", 
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'sans': ['Inter', 'sans-serif'], // Add Inter font.
+      },
+      colors: {
+        'primary': '#6366F1', // Custom primary color
+        'secondary': '#374151', // Custom secondary color
+      },
+    },
   },
   darkMode: false,
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

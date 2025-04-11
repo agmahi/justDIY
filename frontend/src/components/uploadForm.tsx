@@ -39,45 +39,46 @@ const UploadForm: React.FC = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 border rounded-xl shadow bg-white">
-            <h2 className="text-2xl font-bold mb-6 text-center">Upload Instructions</h2>
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                    <label className="block mb-1 font-semibold">Paste Instructions (optional)</label>
-                    <textarea
-                        className="w-full border rounded-lg p-2 resize-none"
-                        rows={5}
-                        value={text}
-                        placeholder="Paste your instructions here..."
-                        onChange={(e) => setText(e.target.value)}
-                        disabled={loading}
-                    ></textarea>
-                </div>
-                <div>
-                    <label className="block mb-1 font-semibold">Upload File (.txt or .pdf)</label>
-                    <input
-                        type="file"
-                        accept=".txt,.pdf"
-                        onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-                        disabled={loading}
-                        className="block w-full"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`w-full py-2 rounded-lg font-semibold transition ${
-                        loading
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-blue-500 hover:bg-blue-600 text-white'
-                    }`}
-                >
-                    {loading ? 'Submitting...' : 'Submit'}
-                </button>
-                {status && <p className="mt-3 text-center text-sm">{status}</p>}
-            </form>
+        <div>
+          <h1 className="text-2xl text-gray-600 font-bold mb-6">Upload Instructions</h1>
+    
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Paste Instructions (optional)
+              </label>
+              <textarea
+                placeholder="Paste your instructions here..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                className="w-full border border-gray-300 rounded-md p-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+    
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Upload File (.txt or .pdf)
+              </label>
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                className="block w-full border border-gray-300 rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+            </div>
+    
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+            >
+              Submit
+            </button>
+    
+            {status && (
+              <p className="mt-4 text-green-600 font-medium">✅ Successfully submitted!</p>
+            )}
+          </form>
         </div>
-    );
+      );
 };
 
 export default UploadForm;

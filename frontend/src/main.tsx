@@ -4,7 +4,10 @@ import './index.css';
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+  <div className="min-h-screen text-gray-800 antialiased bg-gray-100">
+    <StrictMode>
+      <App />
+      </StrictMode>,
+      </div>
+      )
+
