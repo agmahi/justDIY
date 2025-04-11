@@ -27,9 +27,9 @@ router = APIRouter()
 
 @router.post("/instructions/submit", response_model=InstructionResponse)
 async def submit_instruction(
+    background_tasks: BackgroundTasks,
     text: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
-    backgroundtasks: BackgroundTasks = Depends(),
     db: Session = Depends(get_db)
 ):
     """ Submit an instruction with optional text or file.
