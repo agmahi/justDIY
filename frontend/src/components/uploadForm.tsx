@@ -39,8 +39,12 @@ const UploadForm: React.FC = () => {
     };
 
     return (
-        <div>
-          <h1 className="text-2xl text-gray-600 font-bold mb-6">Upload Instructions</h1>
+        <div >
+            {/* <div className="bg-blue-600 text-white p-4 rounded mb-4 text-center">  
+                Tailwind is working ✅
+            </div> */}
+            <div className="hidden bg-blue-600 text-white"></div>
+          <h1 className="text-2xl text-gray-800 font-bold mb-6">Upload Instructions</h1>
     
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -59,16 +63,14 @@ const UploadForm: React.FC = () => {
               <label className="block font-medium text-gray-700 mb-1">
                 Upload File (.txt or .pdf)
               </label>
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="block w-full border border-gray-300 rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-700"
-              />
+              <input type="file"
+                     onChange={(e) => setFile(e.target.files?.[0] || null)}
+                     className="block w-full border border-gray-300 rounded-md p-2"/>
             </div>
     
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+              className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
             >
               Submit
             </button>

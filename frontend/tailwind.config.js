@@ -1,8 +1,14 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./src/index.css", 
+    "./src/*.{html,js,jsx,ts,tsx}",
+    "./src/**/*.{html,js,jsx,ts,tsx}",
+    "./src/index.css",
+  ],
+  safelist:[
+    'bg-blue-600',
+    'ring-blue-500'
   ],
   theme: {
     extend: {
@@ -18,5 +24,6 @@ module.exports = {
   darkMode: false,
   plugins: [
     require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
   ],
 }

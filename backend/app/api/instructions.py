@@ -43,7 +43,7 @@ async def submit_instruction(
     job_id = str(uuid.uuid4())
     print(f"job_id: {job_id} | length: {len(job_id)}")
     parsed_steps = parser.parse_instructions(text)
-    steps_with_images = image_generator.generate_images(parsed_steps)
+    # steps_with_images = image_generator.generate_images(parsed_steps)
 
     # Save Job
     job = db_models.Job(id=job_id, status="pending")
@@ -53,14 +53,14 @@ async def submit_instruction(
     background_tasks.add_task(process_image_generation, job_id, parsed_steps)
 
     # Save Steps
-    for step in steps_with_images:
+    for step in parsed_steps:
         db_step = db_models.Step(
             job_id=job_id,
             step_number=int(step["step"]),
-            instruction=step["instruction"],
-            image_url=step["image_url"]
+            instruction=step["instruction"]
+            # image_url=step["image_url"]
         )
-        db.add(db_step)
+        # db.add(db_step)
         steps.append(Step(**step))
     db.commit()
 
@@ -71,11 +71,7 @@ async def submit_instruction(
     status = "parsed" if text or file else "failed"
     # Later, you would handle the instruction processing here
 
-    print("=== Final Steps Before Returning ===")
-    for step in steps:
-        print(step)
-
-    return InstructionResponse(job_id=job_id, status=status, steps=steps)
+    return InstructionResponse(job_id=job_id, status=status, steps=[])
 
 @router.get("/jobs/{job_id}", response_model=InstructionResponse)
 def get_job(job_id: str, db: Session = Depends(get_db)):
