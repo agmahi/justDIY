@@ -1,0 +1,9 @@
+{
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.testing.pytestArgs": [
+        "backend"
+    ],
+    "terminal.integrated.env.osx": {
+        "PYTHONPATH": "./backend"
+    }
+}

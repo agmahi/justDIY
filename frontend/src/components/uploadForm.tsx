@@ -5,12 +5,14 @@
 // The component is styled using Tailwind CSS for a clean and modern look.
 import React, { useState } from 'react';
 import axios from 'axios';
+import JobStatusViewer from "./jobStatusViewer";
 
 const UploadForm: React.FC = () => {
     const [text, setText] = useState('');
     const [file, setFile] = useState<File | null>(null);
     const [status, setStatus] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [jobId, setJobId] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,17 +26,23 @@ const UploadForm: React.FC = () => {
         if (text) formData.append('text', text);
         if (file) formData.append('file', file);
 
+        // try {
+        //     setLoading(true);
+        //     setStatus(null); // Reset status before submission
+        //     // simulate backedend call for now
+        //     await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate a delay
+        //     const response = await axios.post('http://localhost:8000/instructions/submit', formData);
+        //     setStatus(`✅ Successfully submitted!`);
+        // } catch (error) {
+        //     setStatus('❌ Error submitting instructions.');
+        // } finally {
+        //     setLoading(false);
+        // }
         try {
-            setLoading(true);
-            setStatus(null); // Reset status before submission
-            // simulate backedend call for now
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate a delay
-            const response = await axios.post('http://localhost:8000/instructions/submit', formData);
-            setStatus(`✅ Successfully submitted!`);
-        } catch (error) {
-            setStatus('❌ Error submitting instructions.');
-        } finally {
-            setLoading(false);
+          const response = await axios.post('http://localhost:8000/instructions/submit', formData);
+          setJobId(response.data.job_id);
+    } catch (error) {
+          console.error('Error submitting instructions:', error);
         }
     };
 
@@ -78,6 +86,8 @@ const UploadForm: React.FC = () => {
             {status && (
               <p className="mt-4 text-green-600 font-medium">✅ Successfully submitted!</p>
             )}
+            
+            {jobId && <JobStatusViewer jobId={jobId} />}
           </form>
         </div>
       );
