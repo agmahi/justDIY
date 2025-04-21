@@ -1,33 +1,29 @@
-import re
-from typing import List
-from app.models.schemas import VisualClause
+import fitz
+from app.services.clause_parser import extract_clauses
 
-def extract_clauses(raw_text: str) -> List[VisualClause]:
-    sections = re.split(r"\n{2,}|\.\s+", raw_text)
-    sections = [s.strip() for s in sections if len(s.strip()) > 20]  # Filter out very short sections
+def extract_text_from_pdf(pdf_path):
+    """
+    Extract text from a PDF file using PyMuPDF (fitz).
+    
+    Args:
+        pdf_path (str): Path to the PDF file.
+        
+    Returns:
+        str: Extracted text from the PDF.
+    """
+    text = ""
+    with fitz.open(pdf_path) as doc:
+        for page in doc:
+            text += page.get_text()
+    return text
 
-    clauses = []
-    for i, section in enumerate(sections, start=1):
-        summary, title = simplify_clause(section)
-        clauses.append(
-            VisualClause(
-                step=i,
-                title=title,
-                summary=summary,
-                raw_text=section
-            )
-        )
-    return clauses
+print("Extracting text from PDF...")
+raw_text = extract_text_from_pdf("/Users/amahi/Downloads/EN_US_Arcade_Promo_TandCs.pdf")
 
 
-def simplify_clause(text: str) -> tuple[str, str]:
-    text_lower = text.lower()
-    if "subscription" in text_lower:
-        return ("The subscription auto-renews after trial.", "Subscription Terms")
-    if "family" in text_lower:
-        return ("You can share with up to 5 family members.", "Family Sharing")
-    if "cancel" in text_lower:
-        return ("You can cancel the subscription anytime.", "Cancellation")
-    if "eligible" in text_lower or "device" in text_lower:
-        return ("You must buy a new device to qualify.", "Device Eligibility")
-    return ("General condition of the offer.", "Other")
+clauses = extract_clauses(raw_text)
+for clause in clauses:
+    print(f"Step {clause.step}: {clause.title}")
+    print(f"Summary: {clause.summary}")
+    print(f"Raw Text: {clause.raw_text[:100]}...")  # Print first 100 chars of raw text
+    print("-" * 40)

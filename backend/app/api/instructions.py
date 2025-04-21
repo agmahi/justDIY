@@ -7,8 +7,8 @@ from fastapi import (
     BackgroundTasks, 
     HTTPException
     )
-from app.models.schemas import InstructionResponse, Step
-from app.services import parser, image_generator
+from app.models.schemas import InstructionResponse, Step, VisualClause
+from app.services import parser, image_generator, clause_extractor
 from typing import Optional
 from sqlalchemy.orm import Session
 from app.core.config import SessionLocal
@@ -36,13 +36,14 @@ async def submit_instruction(
     """
     if not text and not file:
         return InstructionResponse(job_id=str(uuid.uuid4()), status="Error: No input provided")
-
-    # Here you would typically process the instruction (text or file)
-    # For demonstration, we are just returning a mock response
-    steps = []
+    clauses = []
     job_id = str(uuid.uuid4())
-    print(f"job_id: {job_id} | length: {len(job_id)}")
-    parsed_steps = parser.parse_instructions(text)
+    parsed_clauses = clause_extractor.extract_clauses(text)
+    extracted_clauses = []
+    for clause in parsed_clauses:
+        print(f"Title: {clause.title}")
+        
+    # parsed_steps = parser.parse_instructions(text)
     # steps_with_images = image_generator.generate_images(parsed_steps)
 
     # Save Job
@@ -50,18 +51,23 @@ async def submit_instruction(
     db.add(job)
     db.commit()
 
-    background_tasks.add_task(process_image_generation, job_id, parsed_steps)
+    # background_tasks.add_task(process_image_generation, job_id, parsed_clauses)
 
     # Save Steps
-    for step in parsed_steps:
-        db_step = db_models.Step(
+    for clause in parsed_clauses:
+        db_step = db_models.Clause(
             job_id=job_id,
-            step_number=int(step["step"]),
-            instruction=step["instruction"]
-            # image_url=step["image_url"]
+            title=clause.title,
+            summary=clause.summary,
+            icon_prompt=clause.icon_prompt if clause.icon_prompt else None,  # Handle optional icon_prompt
+            # id=clause.step,  # Assuming step is an integer
+            raw_text=clause.raw_text,
+            image_url=clause.image_url if clause.image_url else None,  # Handle optional image_url
         )
-        # db.add(db_step)
-        steps.append(Step(**step))
+        db.add(db_step)
+        clauses.append(clause)
+    job = db.query(db_models.Job).filter(db_models.Job.id == job_id).first()
+    job.status = "Completed - Clauses Extracted"
     db.commit()
 
     #The **step syntax is Python's dictionary unpacking feature. 
@@ -83,17 +89,21 @@ def get_job(job_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Job not found")
         # return InstructionResponse(job_id=job_id, status="Job not found", steps=[])
 
-    steps = db.query(db_models.Step).filter(db_models.Step.job_id == job_id).order_by(db_models.Step.step_number).all()
-    parsed_steps = [
-        Step(
-            step=step.step_number,
-            instruction=step.instruction,
-            image_url=step.image_url
+    # steps = db.query(db_models.Step).filter(db_models.Step.job_id == job_id).order_by(db_models.Step.step_number).all()
+    clauses = db.query(db_models.Clause).filter(db_models.Clause.job_id == job_id).all()
+    parsed_clauses = [
+        VisualClause(
+            # step=clause.id,  # Assuming id is used as step number
+            title = clause.title,
+            summary = clause.summary,
+            raw_text = clause.raw_text,
+            icon_prompt=clause.icon_prompt,
+            image_url=clause.image_url,
         )
-        for step in steps
+        for clause in clauses
     ]
 
-    return InstructionResponse(job_id=job_id, status=job.status, steps=parsed_steps)
+    return InstructionResponse(job_id=job_id, status=job.status, steps=parsed_clauses)
 
 
 def process_image_generation(job_id: str, parsed_steps: list):

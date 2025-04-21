@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import ClauseCard from "./clauseCard";
+
 
 const JobViewer: React.FC = () => {
     const [jobId, setJobId] = useState('');
@@ -55,10 +57,12 @@ const JobViewer: React.FC = () => {
             )}
             {steps.length > 0 && (
                 <div className="space-y-4 mt-4">
-                    {steps.map((step, idx) => (
+                    {/* {steps.map((step, idx) => (
                         <div key={idx} className="p-4 bg-gray-50 border rounded-lg shadow-sm">
-                            <p className="font-semibold mb-1 text-gray-800">Step {step.step}</p>
-                            <p className="text-gray-700">{step.instruction}</p>
+                            <p className="font-semibold mb-1 text-gray-800">Step {step.step}</p> 
+                            <p className="font-semibold mb-1 text-gray-800">{step.title}</p>
+                            <p className="mb-1 text-black-500">Summary: {step.summary}</p>
+                            <p className="text-gray-700">{step.icon_prompt}</p>
                             {step.image_url && (
                                 <img
                                     src={step.image_url}
@@ -67,6 +71,16 @@ const JobViewer: React.FC = () => {
                                 />
                                 )}
                         </div>
+                    ))} */}
+                    {steps.map((clause, idx) => (
+                        <ClauseCard 
+                            key={idx}
+                            title={clause.title}
+                            summary={clause.summary}
+                            raw_text={clause.raw_text}
+                            icon_prompt={clause.icon_prompt}
+                            image_url={clause.image_url}
+                        />
                     ))}
                 </div>
             )}

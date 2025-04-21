@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ClauseCard from "./clauseCard";
 
 const JobStatusViewer = ({ jobId }: { jobId: string }) => {
   const [status, setStatus] = useState("");
@@ -15,7 +16,7 @@ const JobStatusViewer = ({ jobId }: { jobId: string }) => {
         setStatus(res.data.status);
         setSteps(res.data.steps);
 
-        if (res.data.status === "images_generated") {
+        if (res.data.status === "Completed - Clauses Extracted") {
           clearInterval(interval); // Stop polling when done
         }
       } catch (err) {
@@ -36,7 +37,7 @@ const JobStatusViewer = ({ jobId }: { jobId: string }) => {
         Status:{" "}
         <span
           className={`inline-block px-2 py-1 rounded text-sm ${
-            status === "images_generated"
+            status === "Completed - Clauses Extracted"
               ? "bg-green-100 text-green-700"
               : "bg-yellow-100 text-yellow-700"
           }`}
@@ -47,7 +48,7 @@ const JobStatusViewer = ({ jobId }: { jobId: string }) => {
 
       {steps.length > 0 && (
         <div className="space-y-4">
-          {steps.map((step, idx) => (
+          {/* {steps.map((step, idx) => (
             <div key={idx} className="p-4 bg-gray-50 border rounded shadow-sm">
               <p className="font-semibold mb-1 text-gray-800">Step {step.step}</p>
               <p className="text-gray-700">{step.instruction}</p>
@@ -59,7 +60,16 @@ const JobStatusViewer = ({ jobId }: { jobId: string }) => {
                 />
               )}
             </div>
-          ))}
+          ))} */}
+          {steps.map((clause, idx) => (
+            <ClauseCard key={idx}
+                        title={clause.title}
+                        summary={clause.summary}
+                        raw_text={clause.raw_text}
+                        icon_prompt={clause.icon_prompt}
+                        image_url={clause.image_url}
+                        />
+            ))}
         </div>
       )}
 
