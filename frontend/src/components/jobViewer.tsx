@@ -79,7 +79,7 @@ const JobViewer: React.FC = () => {
                             summary={clause.summary}
                             raw_text={clause.raw_text}
                             icon_prompt={clause.icon_prompt}
-                            image_url={clause.image_url}
+                            // image_url={clause.image_url}
                         />
                     ))}
                 </div>

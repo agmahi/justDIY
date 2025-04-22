@@ -22,7 +22,7 @@ const ClauseCard: React.FC<ClauseProps> = ({
       {/* Icons */}
       <div className="flex justify-center gap-3">
         {icons.map((Icon, index) => (
-          <Icon key={index} className="w-6 h-6 text-blue-600" title={Icon.name} />
+          <Icon key={index} className="w-6 h-6 text-blue-600" />
         ))}
       </div>
 
