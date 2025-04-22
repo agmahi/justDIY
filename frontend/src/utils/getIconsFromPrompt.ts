@@ -1,49 +1,64 @@
-import * as LucideIcons from "lucide-react";
 import { LucideIcon } from "lucide-react";
+import {
+  CreditCard,
+  Wallet,
+  XCircle,
+  ShieldCheck,
+  BarChart,
+  LineChart,
+  Share2,
+  MessageCircle,
+  Mail,
+  User,
+  UserCircle,
+  Smartphone,
+  FileText,
+  AlertTriangle,
+  Globe,
+  Clock,
+  Gavel,
+  ClipboardX
+} from "lucide-react";
 
-type IconMatch = { name: string; component: LucideIcon };
-
-// Keywords mapped to possible Lucide icon names
-const iconKeywordMap: Record<string, string[]> = {
-  subscription: ["CreditCard", "Repeat"],
-  payment: ["CreditCard", "DollarSign"],
-  privacy: ["ShieldCheck", "Lock"],
-  data: ["BarChart", "Eye"],
-  family: ["Users", "UserPlus"],
-  cancel: ["X", "Slash"],
-  trial: ["Clock", "CalendarCheck"],
-  device: ["Smartphone", "MonitorSmartphone"],
-  ios: ["Apple", "Smartphone"],
-  mac: ["Monitor", "Laptop"],
-  time: ["Clock", "Hourglass"],
-  terms: ["FileText", "ScrollText"],
+const keywordIconMap: Record<string, LucideIcon> = {
+  subscription: CreditCard,
+  payment: Wallet,
+  cancel: XCircle,
+  privacy: ShieldCheck,
+  data: BarChart,
+  analytics: LineChart,
+  sharing: Share2,
+  communication: MessageCircle,
+  email: Mail,
+  user: User,
+  account: UserCircle,
+  device: Smartphone,
+  jurisdiction: Globe,
+  time: Clock,
+  terms: FileText,
+  gavel: Gavel,
+  dispute: ClipboardX,
+  default: AlertTriangle
 };
 
-export const getIconsFromPrompt = (prompt: string | undefined): IconMatch[] => {
-  if (!prompt) return [{ name: "FileText", component: LucideIcons.FileText }];
+export const getIconsFromPrompt = (prompt: string | undefined): LucideIcon[] => {
+  if (!prompt) return [FileText];
 
-  const found = new Set<string>();
-  const lower = prompt.toLowerCase();
+  const icons: LucideIcon[] = [];
+  const seen = new Set<string>();
 
-  for (const keyword in iconKeywordMap) {
-    if (lower.includes(keyword)) {
-      iconKeywordMap[keyword].forEach(icon => found.add(icon));
+  const words = prompt.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+
+  for (const word of words) {
+    if (keywordIconMap[word] && !seen.has(word)) {
+      icons.push(keywordIconMap[word]);
+      seen.add(word);
     }
   }
 
-  const results: IconMatch[] = [];
-
-  for (const name of found) {
-    const component = LucideIcons[name as keyof typeof LucideIcons] as LucideIcon;
-    if (component) {
-      results.push({ name, component });
-    }
+  if (icons.length === 0) {
+    icons.push(AlertTriangle);
   }
 
-  // Fallback if nothing matched
-  if (results.length === 0) {
-    results.push({ name: "AlertTriangle", component: LucideIcons.AlertTriangle });
-  }
-
-  return results;
+  return icons;
 };

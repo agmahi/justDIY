@@ -45,7 +45,7 @@ const JobViewer: React.FC = () => {
                         Status:{" "}
                         <span 
                             className={`inline-block px-2 py-1 rounded text-sm ${
-                                status === "images_generated"
+                                status === "Completed - Clauses Extracted"
                                 ? "bg-green-100 text-green-700"
                                 : "bg-yellow-100 text-yellow-700"
                             }`}
